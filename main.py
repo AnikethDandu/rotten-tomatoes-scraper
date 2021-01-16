@@ -1,6 +1,7 @@
 import argparse
 from bs4 import BeautifulSoup
 import urllib.request
+import re
 
 # Genre = None + Year = None => Best movies of all time (https://www.rottentomatoes.com/top/bestofrt/)
 # Genre = [] + Year = None => Top 100 [genre] movies
@@ -56,5 +57,19 @@ if args.year is not None and args.genre is not None:
     print('You cannot select a year and a genre. Please select only one')
     exit()
 
-if args.year is None and args.genre is None:
-    print(return_html_object('https://www.rottentomatoes.com/top/bestofrt/'))
+if args.year is None:
+    if args.genre is None:
+        soup = return_html_object('https://www.rottentomatoes.com/top/bestofrt/')
+        body = soup.body
+        print(f'{soup.title.contents[0]}')
+        table = body.find(href=re.compile("/m/black_panther_2018")).parent.parent.parent
+        table_contents = table.find_all("td")
+        movie_links = [list(thing.children)[1] for thing in table_contents if thing.find("a") is not None]
+        movie_links_text = list([thing.find_all(text=True) for thing in movie_links])
+        for i in range(args.length):
+            print(f'{i+1}. {movie_links_text[i][0].strip()}')
+    else:
+        # Use genre URL
+        pass
+
+
