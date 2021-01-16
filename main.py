@@ -1,6 +1,19 @@
 import argparse
 from bs4 import BeautifulSoup
-import urllib
+import urllib.request
+
+# Genre = None + Year = None => Best movies of all time (https://www.rottentomatoes.com/top/bestofrt/)
+# Genre = [] + Year = None => Top 100 [genre] movies
+# Genre = None + Year = [] => Best movies of []
+
+
+def return_html_object(url):
+    html_filename, headers = urllib.request.urlretrieve(url)
+    with open(html_filename) as file:
+        soup = BeautifulSoup(file, 'html.parser')
+        file.close()
+    return soup
+
 
 MOVIE_GENRES = [
     'Action & Adventure',
@@ -42,3 +55,6 @@ if args.genre not in MOVIE_GENRES and args.genre is not None:
 if args.year is not None and args.genre is not None:
     print('You cannot select a year and a genre. Please select only one')
     exit()
+
+if args.year is None and args.genre is None:
+    print(return_html_object('https://www.rottentomatoes.com/top/bestofrt/'))
