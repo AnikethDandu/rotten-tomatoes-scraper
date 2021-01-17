@@ -1,11 +1,6 @@
 import argparse
 from bs4 import BeautifulSoup
 import urllib.request
-import re
-
-# Genre = None + Year = None => Best movies of all time (https://www.rottentomatoes.com/top/bestofrt/)
-# Genre = [] + Year = None => Top 100 [genre] movies
-# Genre = None + Year = [] => Best movies of []
 
 BASE_URL = 'https://www.rottentomatoes.com/top/bestofrt/'
 
@@ -20,13 +15,11 @@ def return_html_object(url):
 
 def return_movie_list(url):
     soup = return_html_object(url)
-    body = soup.body
-    table_contents = list(body.find_all(href=re.compile("/m/")))
     cell_data_list = soup.find('body').find('div', {'class': 'col-left-center'}).find('table').find_all('td')
-    span_rating_list = list([span.find_all('span', {'class': 'tMeterScore'}) for span in cell_data_list])
+    span_rating_list = list([cell.find_all('span', {'class': 'tMeterScore'}) for cell in cell_data_list])
     rating_list = list([span[0].text.strip() for span in span_rating_list if span != []])
-    movies = list([thing.find_all(text=True)[0].strip() for thing in table_contents
-                   if thing.find_all(text=True)[0].strip() != ''])[1:]
+    movies = list(movie[0].text.strip() for movie in list([cell.find_all('a') for cell in cell_data_list])
+                  if movie != [])
     return soup.title.contents[0], movies, rating_list
 
 
