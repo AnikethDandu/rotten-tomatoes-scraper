@@ -60,14 +60,8 @@ if args.year is not None and args.genre is not None:
     exit()
 
 if args.year is None:
-    # if args.genre is None:
-    #     soup = return_html_object('https://www.rottentomatoes.com/top/bestofrt/')
-    # else:
-    #     args.genre = args.genre.strip().lower()
-    #     print(args.genre)
-    # soup = return_html_object('https://www.rottentomatoes.com/top/bestofrt/top_100_' + args.genre
-    #                           + '_movies/')
-
+    if args.genre is not None:
+        BASE_URL += 'top_100_' + args.genre.strip().lower() + '_movies/'
     soup = return_html_object(BASE_URL)
     body = soup.body
     table_contents = list(body.find_all(href=re.compile("/m/")))
