@@ -18,6 +18,15 @@ def return_html_object(url):
     return soup
 
 
+def return_movie_list(url):
+    soup = return_html_object(url)
+    body = soup.body
+    table_contents = list(body.find_all(href=re.compile("/m/")))
+    movies = list([thing.find_all(text=True)[0].strip() for thing in table_contents
+                   if thing.find_all(text=True)[0].strip() != ''])[1:]
+    return soup.title.contents[0], movies
+
+
 MOVIE_GENRES = [
     'Action & Adventure',
     'Animation',
@@ -67,13 +76,10 @@ if args.year is not None and args.genre is not None:
 if args.year is None:
     if args.genre is not None:
         BASE_URL += 'top_100_' + \
-                    '__'.join(list([word.strip().lower() for word in original_genre])) \
-                    + '_movies/'
-    soup = return_html_object(BASE_URL)
-    print(f'{soup.title.contents[0]}')
-    body = soup.body
-    table_contents = list(body.find_all(href=re.compile("/m/")))
-    movies = list([thing.find_all(text=True)[0].strip() for thing in table_contents
-                   if thing.find_all(text=True)[0].strip() != ''])[1:]
-    for i in range(args.length):
-        print(f'{i+1}. {movies[i]}')
+                    '__'.join(list([word.strip().lower() for word in original_genre])) + '_movies/'
+else:
+    BASE_URL += f'?year={args.year}'
+movie_category, top_movies = return_movie_list(BASE_URL)
+print(movie_category)
+for i in range(args.length):
+    print(f'{i+1}. {top_movies[i]}')
