@@ -7,6 +7,8 @@ import re
 # Genre = [] + Year = None => Top 100 [genre] movies
 # Genre = None + Year = [] => Best movies of []
 
+BASE_URL = 'https://www.rottentomatoes.com/top/bestofrt/'
+
 
 def return_html_object(url):
     html_filename, headers = urllib.request.urlretrieve(url)
@@ -58,18 +60,18 @@ if args.year is not None and args.genre is not None:
     exit()
 
 if args.year is None:
-    if args.genre is None:
-        soup = return_html_object('https://www.rottentomatoes.com/top/bestofrt/')
-        body = soup.body
-        print(f'{soup.title.contents[0]}')
-        table = body.find(href=re.compile("/m/black_panther_2018")).parent.parent.parent
-        table_contents = table.find_all("td")
-        movie_links = [list(thing.children)[1] for thing in table_contents if thing.find("a") is not None]
-        movie_links_text = list([thing.find_all(text=True) for thing in movie_links])
-        for i in range(args.length):
-            print(f'{i+1}. {movie_links_text[i][0].strip()}')
-    else:
-        # Use genre URL
-        pass
+    # if args.genre is None:
+    #     soup = return_html_object('https://www.rottentomatoes.com/top/bestofrt/')
+    # else:
+    #     args.genre = args.genre.strip().lower()
+    #     print(args.genre)
+    # soup = return_html_object('https://www.rottentomatoes.com/top/bestofrt/top_100_' + args.genre
+    #                           + '_movies/')
 
-
+    soup = return_html_object(BASE_URL)
+    body = soup.body
+    table_contents = list(body.find_all(href=re.compile("/m/")))
+    movies = list([thing.find_all(text=True)[0].strip() for thing in table_contents
+                   if thing.find_all(text=True)[0].strip() != ''])[1:]
+    for i in range(args.length):
+        print(f'{i+1}. {movies[i]}')
