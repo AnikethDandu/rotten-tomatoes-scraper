@@ -39,11 +39,15 @@ MOVIE_GENRES = [
 parser = argparse.ArgumentParser(description='Return top movies from Rotten Tomatoes site')
 parser.add_argument('-l', '--length', type=int, nargs='?', default=10,
                     help='Specify length of list of movies returned. Must at most 100')
-parser.add_argument('-g', '--genre', type=str, nargs='?', default=None,
-                    help=f'Select movie genre from following: {", ".join(list([movie for movie in MOVIE_GENRES]))}')
+parser.add_argument('-g', '--genre', type=str, nargs='*', default=None,
+                    help=f'Select movie genre from following: {", ".join(list([movie for movie in MOVIE_GENRES]))}. '
+                    'For genres of multiple words, type each word of genre with space in between')
 parser.add_argument('-y', '--year', type=int, nargs='?', default=None,
                     help='Choose year to view top [l] movies (cannot be used to find genre in specific year')
 args = parser.parse_args()
+original_genre = args.genre
+if args.genre is not None:
+    args.genre = ' & '.join(args.genre)
 
 if not 0 < args.length <= 100:
     print('Please specify a number of movies from 1-100')
@@ -51,8 +55,9 @@ if not 0 < args.length <= 100:
 
 if args.genre not in MOVIE_GENRES and args.genre is not None:
     print(f'{args.genre} is not a valid genre. '
-          f'Please select one of the following:\n'
-          f'{", ".join(list([movie for movie in MOVIE_GENRES]))}')
+          f'Please select one of the following: '
+          f'{", ".join(list([movie for movie in MOVIE_GENRES]))}. '
+          'For genres of multiple words, type each word of genre with space in between')
     exit()
 
 if args.year is not None and args.genre is not None:
@@ -61,8 +66,11 @@ if args.year is not None and args.genre is not None:
 
 if args.year is None:
     if args.genre is not None:
-        BASE_URL += 'top_100_' + args.genre.strip().lower() + '_movies/'
+        BASE_URL += 'top_100_' + \
+                    '__'.join(list([word.strip().lower() for word in original_genre])) \
+                    + '_movies/'
     soup = return_html_object(BASE_URL)
+    print(f'{soup.title.contents[0]}')
     body = soup.body
     table_contents = list(body.find_all(href=re.compile("/m/")))
     movies = list([thing.find_all(text=True)[0].strip() for thing in table_contents
