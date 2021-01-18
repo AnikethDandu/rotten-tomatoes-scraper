@@ -1,7 +1,7 @@
 # Rotten Tomatoes Scraper
 [![forthebadge](http://forthebadge.com/images/badges/made-with-python.svg)](http://forthebadge.com)
 
-A Python CLI tool that returns a list of top movies from the [Rotten Tomatoes Website](https://www.rottentomatoes.com).
+A Python CLI tool that returns a list of top rated movies from the [Rotten Tomatoes Website](https://www.rottentomatoes.com).
 
 ## Installation
 Make sure you have installed git. Run the following command in your desired project directory to get the scripts on your computer.
@@ -17,9 +17,9 @@ Python3 main.py [-l] [-g] [-h]
 
 ## Features
 ### Command-line arguments
-* --length (-l): optional
+* --length, -l
   * Specify number of Top 100 movies to get. Can only choose from 0 - 100
-* --genre (-g): optional
+* --genre, -g
   * Specify genre of movies to get
-* --year (-y): optional
+* --year, -y
   * Specify year to get movies from. <b>Cannot specify both year and genre. Only specify one or the other</b>
