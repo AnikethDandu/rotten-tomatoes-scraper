@@ -4,7 +4,7 @@
 A Python CLI tool that returns a list of top rated movies from the [Rotten Tomatoes Website](https://www.rottentomatoes.com).
 
 ## Installation
-Make sure you have installed git. Run the following command in your desired project directory to get the script on your computer.
+Make sure you have installed git. Run the following command in your desired project directory to get the script on your computer
 ```bash
 git clone https://github.com/AnikethDandu/rotten-tomatoes-scraper.git
 ```
@@ -14,7 +14,7 @@ pip install beautifulsoup4
 ```
 
 ## Usage
-To use the project, navigate inside the RottenTomatoesScraper directory. Once inside, run the following command:
+To use the project, navigate inside the RottenTomatoesScraper directory. Once inside, run the following command
 ```bash
 Python3 main.py [-l] [-g] [-h]
 ```
